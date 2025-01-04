@@ -28,6 +28,7 @@ impl Beam {
 pub(crate) struct BeamElement {
     id: usize,
     length: f64,
+    versor: Array2<f64>,
     properties: Option<BeamProperties>,
     stiffness_matrix: Array2<f64>,
     weight: Option<f64>,
@@ -35,23 +36,35 @@ pub(crate) struct BeamElement {
 
 impl BeamElement {
 
-    /// This function creates a new [BeamElement] with the given coordinates and id.
+    /// This function creates a new [BeamElement] oriented in space
     /// 
-    /// 
+    /// The local axis of the [BeamElement] is such that the x axis is the unit vector between the two given points [u1] and [u2], and the y axis is the vector [y], which can also be non-unitary.
     /// If the properties are given as a [BeamProperties] object, the stiffness matrix is computed.
     /// If the weight is computed, this is applied on the z axis.
-    fn new(u1: &[f64;3], u2:[f64;3], id: usize, properties: Option<BeamProperties>, weight: Option<f64>) -> Self {
-        let length = ((u2[0] - u1[0]).powi(2) + (u2[1] - u1[1]).powi(2) + (u2[2] - u1[2]).powi(2)).sqrt();
+    fn new(u1: &[f64;3], u2:[f64;3], id: usize, y: &[f64;3], properties: Option<BeamProperties>, weight: Option<f64>) -> Self {
+        let mut x = [(u2[0] - u1[0]), (u2[1] - u1[1]), (u2[2] - u1[2])];
+        let length = (x[0].powi(2) + x[1].powi(2) + x[2].powi(2)).sqrt();
+        x = x*1.0/length;
+        let length_y = (y[0].powi(2) + y[1].powi(2) + y[2].powi(2)).sqrt();
+        let mut loc_y = y;
+        if length_y != 1.0 {
+             loc_y = loc_y*1.0/length_y;
+        }
+        let z = todo!("(a b c)x(d e f) = (bf-ce,cd-af,ae-bd)");
+        let versor = array![x, loc_y, z];
         let stiffness_matrix;
         
         if let Some(properties) = &properties {
             stiffness_matrix = properties.compute_stiffness_matrix(length);
+            //TODO: add change of base!!!
         } else {
             stiffness_matrix = Array2::zeros([12,12]);
         }
+        
         Self {
             id,
             length,
+            versor,
             properties,
             stiffness_matrix,
             weight,
