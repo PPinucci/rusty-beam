@@ -7,8 +7,13 @@
 
 */
 
-use ndarray::Array2;
+use ndarray::{array, Array2};
 
+/// Cross product of 2 3D vectors
+/// (a b c)x(d e f) = (bf-ce,cd-af,ae-bd)
+pub fn cross_prodct(a: &[f64;3], b: &[f64;3]) -> [f64;3] {
+    [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]
+}
 
 /// This is a beam, defined to be solved with the Timoshenko beam theory.
 /// 
@@ -50,8 +55,8 @@ impl BeamElement {
         if length_y != 1.0 {
              loc_y = loc_y*1.0/length_y;
         }
-        let z = todo!("(a b c)x(d e f) = (bf-ce,cd-af,ae-bd)");
-        let versor = array![x, loc_y, z];
+        let z = cross_prodct(&x, &loc_y);
+        let versor = array![x, *loc_y, z];
         let stiffness_matrix;
         
         if let Some(properties) = &properties {
@@ -85,7 +90,8 @@ pub(crate) struct BeamProperties {
 impl BeamProperties {
     /// This function creates a new [BeamProperties] object with the given properties.
     /// 
-    /// The convention is that x is positive along the beam axis, y is positive upwards and z is positive to the right.
+    /// The convention is that x is positive along the beam axis, y is where the y versor is defined in the [BeamElement] struct
+    /// and z is the right-hand rule cross product of the two versors.
     pub(crate) fn new(e: f64, g: f64, a: f64, iy: f64, iz: f64, shape: BeamShape) -> Self {
         Self {
             e,
