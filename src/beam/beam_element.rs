@@ -39,15 +39,14 @@ impl BeamElement {
     /// * `weight` - An optional f64 defining the weight of the element, always pointing in the negative global z axis.
     /// 
     /// # Example
-    /// 
-    /// '''
+    /// ՝՝՝
     /// use timoshenko_beam::beam::BeamElement;
     /// use timoshenko_beam::beam::BeamProperties;
     /// use timoshenko_beam::beam::BeamShape;
     /// let properties = BeamProperties::new(1.0, 1.0, 1.0, 1.0, 1.0, BeamShape::Rectangular);
     ///
     /// let beam_element = BeamElement::new(&[0.0, 0.0, 0.0], &[1.0, 0.0, 0.0], 0, &[0.0, 1.0, 0.0], Some(properties), None);
-    /// '''
+    /// ՝՝՝
     fn new(u1: &[f64;3], u2:[f64;3], id: usize, y: &[f64;3], properties: Option<BeamProperties>, weight: Option<f64>) -> Self {
         // compute the axis of the beam
         let mut x = [(u2[0] - u1[0]), (u2[1] - u1[1]), (u2[2] - u1[2])];
@@ -96,7 +95,7 @@ impl BeamElement {
     /// Returns true if the properties are defined, false otherwise.
     /// 
     /// # Example
-    /// '''
+    /// ՝՝՝
     /// use timoshenko_beam::beam::BeamElement;
     /// use timoshenko_beam::beam::BeamProperties;
     /// use timoshenko_beam::beam::BeamShape;
@@ -110,7 +109,7 @@ impl BeamElement {
     /// 
     /// 
     /// assert_eq!(beam_element.has_properties(), false);
-    /// '''
+    /// ՝՝՝
     pub(crate) fn has_properties(&self) -> bool {
         self.properties.is_some()
     }
@@ -135,7 +134,7 @@ impl BeamElement {
     /// The versor is a 3x3 matrix where the columns are the x, y and z axis of the local reference of the element.
     /// 
     /// # Example
-    /// '''
+    /// ՝՝՝
     /// use timoshenko_beam::beam::BeamElement;
     /// use timoshenko_beam::beam::BeamProperties;
     /// use timoshenko_beam::beam::BeamShape;
@@ -152,7 +151,7 @@ impl BeamElement {
     /// assert_eq!(x, array![1.0, 0.0, 0.0]);
     /// assert_eq!(y, array![0.0, 1.0, 0.0]);
     /// assert_eq!(z, array![0.0, 0.0, 1.0]);
-    /// '''
+    /// ՝՝՝
     
     pub(crate) fn get_versor(&self) -> &Array2<f64> {
         &self.versor
