@@ -1,11 +1,18 @@
-/*
-    This module contains the [Beam] struct, which is the main object of the crate, and its constructing element, the [BeamElement] struct.
+/*!
+ *  Contains the [Beam] struct, which is made by various [BeamElement]s.
 
-    
+
 */
 
-pub mod beam;
-pub mod beam_element;
+/// This is the main struct of the crate, defined to be solved with the Timoshenko beam theory.
+///
+#[derive(Debug, Clone, PartialEq)]
+pub struct Beam {}
 
-use beam::Beam;
-use beam_element::BeamElement;
+impl Beam {}
+
+pub mod beam_element;
+pub mod beam_properties;
+
+pub use beam_element::BeamElement;
+pub use beam_properties::{BeamProperties, BeamShape};
