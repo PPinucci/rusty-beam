@@ -1,7 +1,12 @@
 [package]
 name = "rusty-beam"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
+authors = ["Pietro Pinucci <pietro.pinucci@gmail.com>"]
+description = "A Rust implementation of a Timoshenko Beam"
+repository = "https://github.com/PPinucci/rusty-beam.git"
+license = "GNU GPLv3"
+
 
 [dependencies]
 ndarray = "0.16.1"
