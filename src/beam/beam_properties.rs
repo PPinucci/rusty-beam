@@ -1,9 +1,9 @@
 /*!
-      Contains the structural properties of a [BeamElement], the [BeamProperties] struct, along with the [BeamShape] enum.
+    Contains the structural properties of a [BeamElement], the [BeamProperties] struct, along with the [BeamShape] enum.
 
-    *   The [BeamProperties] struct contains all the necessry properties to compute the stiffness matrix of a beam element.
+    The [BeamProperties] struct contains all the necessry properties to compute the stiffness matrix of a beam element.
 
-    *   The [BeamShape] enum contains the different shapes of beams that can be used to compute the shape factor.
+    The [BeamShape] enum contains the different shapes of beams that can be used to compute the shape factor.
 
 */
 
@@ -33,6 +33,15 @@ impl BeamProperties {
     ///
     /// The convention is that x is positive along the beam axis, y is where the y versor is defined in the [BeamElement] struct
     /// and z is the right-hand rule cross product of the two versors.
+    /// 
+    /// # Arguments
+    /// - `e` - Young's modulus
+    /// - `g` - Shear modulus
+    /// - `a` - Cross-sectional area
+    /// - `iy` - Moment of inertia about the y-axis
+    /// - `iz` - Moment of inertia about the z-axis
+    /// - `shape` - Shape of the beam (from the [BeamShape] enum)
+    /// 
     pub fn new(e: f64, g: f64, a: f64, iy: f64, iz: f64, shape: BeamShape) -> Self {
         Self {
             e,
@@ -47,6 +56,13 @@ impl BeamProperties {
     /// This function computes the stiffness matrix of the beam element.
     ///
     /// It is computed according to Appendiz A of the paper by Yunhua Luo.
+    /// It is a 12x12 matrix, calculated for a beam of length `length` which is uniform and symmetric.
+    /// In the loal coordinate it is [K] such that it soves the equation:
+    /// [u1, u2, v1, v2, w1, w2, phi_x1, phi_x2, phi_y1, phi_y2, phi_z1, phi_z2] = [K] * [F]
+    /// where [u, v, w] are the displacements along the x, y and z axis, and [phi_x, phi_y, phi_z] are the rotations about the x, y and z axis
+    /// and the appendix marks the location of the node as 1 and 2 (start and end of the beam).
+    /// [F] is the force vector.
+    /// 
     pub(crate) fn compute_stiffness_matrix(&self, length: f64) -> Array2<f64> {
         let k = self.shape.get_shape_coefficient();
         let mut stiffness_matrix = Array2::zeros([12, 12]);

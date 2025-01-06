@@ -20,10 +20,14 @@ pub fn cross_prodct(a: &[f64; 3], b: &[f64; 3]) -> [f64; 3] {
     ]
 }
 
+/// Scalar multiplication of a 3D vector
+/// (a b c)*d = (ad,bd,cd)
 pub fn scalar_mult(a: &[f64; 3], b: f64) -> [f64; 3] {
     [a[0] * b, a[1] * b, a[2] * b]
 }
 
+/// Modulus of a 3D vector
+/// |a b c| = sqrt(a^2 + b^2 + c^2)
 pub fn modulus(a: &[f64; 3]) -> f64 {
     (a[0].powi(2) + a[1].powi(2) + a[2].powi(2)).sqrt()
 }
