@@ -58,7 +58,7 @@ impl BeamProperties {
     /// It is computed according to Appendiz A of the paper by Yunhua Luo.
     /// It is a 12x12 matrix, calculated for a beam of length `length` which is uniform and symmetric.
     /// In the loal coordinate it is [K] such that it soves the equation:
-    /// [u1, u2, v1, v2, w1, w2, phi_x1, phi_x2, phi_y1, phi_y2, phi_z1, phi_z2] = [K] * [F]
+    /// [u1, v1, w1, phi_x1,phi_y1, phi_z1, u2, v2, w2, phi_x2, phi_y2, phi_z2]^T = [K] * [F]
     /// where [u, v, w] are the displacements along the x, y and z axis, and [phi_x, phi_y, phi_z] are the rotations about the x, y and z axis
     /// and the appendix marks the location of the node as 1 and 2 (start and end of the beam).
     /// [F] is the force vector.

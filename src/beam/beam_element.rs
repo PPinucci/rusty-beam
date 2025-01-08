@@ -6,7 +6,7 @@
 */
 
 use crate::{beam::beam_properties::BeamProperties, cross_prodct, modulus, scalar_mult};
-use ndarray::{array, Array2};
+use ndarray::{array, s, Array2};
 
 /// This is the elementary element of a [Beam].
 ///
@@ -89,16 +89,11 @@ impl BeamElement {
         let versor = array![x, loc_y, z];
 
         // allocate the stiffness matrix
-        let stiffness_matrix;
-        if let Some(properties) = &properties {
-            // the stifness matrix in the local reference is computed if we have properties input
-            stiffness_matrix = properties.compute_stiffness_matrix(length);
-            //TODO: add change of base to the global reference!!!
-        } else {
-            // to avoid an Option, we just allocate a zero matrix
-            stiffness_matrix = Array2::zeros([12, 12]);
-        }
-
+        let mut stiffness_matrix= Array2::zeros([12, 12]);
+        if let Some(prop) = &properties {
+           stiffness_matrix = Self::stiffness_from_properties(prop, length, &versor);
+        } 
+            
         Self {
             id,
             length,
@@ -107,6 +102,27 @@ impl BeamElement {
             stiffness_matrix,
             weight,
         }
+    }
+
+    fn stiffness_from_properties(properties: &BeamProperties, length: f64, versor: &Array2<f64>) -> Array2<f64> {
+            // the stifness matrix in the local reference is computed if we have properties input
+            let stiffness_matrix = properties.compute_stiffness_matrix(length);
+            // TODO: add change of base to the global reference
+            // The rotation matrix to apply is: 
+            // [R 0 0 0]
+            // [0 I 0 0]
+            // [0 0 R 0]
+            // [0 0 0 I]
+            // to the left of the stiffness matrix.
+            // R is the rotation matrix from the local reference to the global reference
+            let identity = Array2::eye(3);
+            let mut rotation = Array2::zeros([12,12]);
+            rotation.slice_mut(s![0..3, 0..3]).assign(&versor);
+            rotation.slice_mut(s![3..6, 3..6]).assign(&identity);
+            rotation.slice_mut(s![6..9, 6..9]).assign(&versor);
+            rotation.slice_mut(s![9..12, 9..12]).assign(&identity);
+            // multiply the stiffness matrix by the rotation matrix
+            rotation.dot(&stiffness_matrix)
     }
 
     /// Tests if properties are defined for the [BeamElement]
