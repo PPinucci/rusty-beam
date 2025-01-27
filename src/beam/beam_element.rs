@@ -30,10 +30,10 @@ impl BeamElement {
     ///
     /// # Arguments
     ///
-    /// * `u1` - A reference to a 3D array representing the first point of the element.
-    /// * `u2` - A 3D array representing the second point of the element.
+    /// * `u1` - a 3D array representing the first point of the element.
+    /// * `u2` - a 3D array representing the second point of the element.
     /// * `id` - The id of the element.
-    /// * `y` - A reference to a 3D array representing the y axis of the element (where the local Iyy is defined).
+    /// * `y` - a 3D array representing the y axis of the element (where the local Iyy is defined).
     /// * `properties` - An optional [BeamProperties] object defining the structural properties of the element.
     /// * `weight` - An optional f64 defining the weight of the element, always pointing in the negative global z axis.
     ///
@@ -55,7 +55,7 @@ impl BeamElement {
     ///                         &[0.0, 0.0, 0.0],
     ///                         &[1.0, 0.0, 0.0],
     ///                         0,
-    ///                         &[0.0, 1.0, 0.0],
+    ///                         &[0.0, 0.0, 0.0],
     ///                         Some(properties),
     ///                          None
     ///                    );
@@ -107,7 +107,6 @@ impl BeamElement {
     fn stiffness_from_properties(properties: &BeamProperties, length: f64, versor: &Array2<f64>) -> Array2<f64> {
             // the stifness matrix in the local reference is computed if we have properties input
             let stiffness_matrix = properties.compute_stiffness_matrix(length);
-            // TODO: add change of base to the global reference
             // The rotation matrix to apply is: 
             // [R 0 0 0]
             // [0 I 0 0]
@@ -182,6 +181,12 @@ impl BeamElement {
         self.length
     }
 
+    /// Gets a reference to the stiffness matrix of the [BeamElement]
+    /// 
+    pub fn get_stiffness_matrix(&self) -> &Array2<f64> {
+        &self.stiffness_matrix
+    }
+
     /// Gets a reference to the versor of the [BeamElement]
     ///
     /// The versor is a 3x3 matrix where the columns are the x, y and z axis of the local reference of the element.
@@ -223,4 +228,11 @@ impl BeamElement {
     pub fn get_versor(&self) -> &Array2<f64> {
         &self.versor
     }
+}
+
+
+#[cfg(test)]
+mod beam_element_test {
+    use super::*;
+
 }

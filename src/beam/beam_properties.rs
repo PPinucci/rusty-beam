@@ -151,7 +151,6 @@ impl BeamShape {
         match self {
             BeamShape::Rectangular => RECTANGULAR_SHAPE_COEFF,
             BeamShape::Custom(value) => *value,
-            _ => RECTANGULAR_SHAPE_COEFF,
         }
     }
 }
